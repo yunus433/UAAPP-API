@@ -1,0 +1,12 @@
+extends ../partials/header
+block main
+  .all-content-inner-wrapper
+    .late-bus-header
+      span.late-bus-header-name Name Surname
+      span.late-bus-header-number Number
+      span.late-bus-header-destination Destination
+    each registration in late_bus_registrations
+      .late-bus
+        span.late-bus-name= registration.user.name
+        span.late-bus-number= registration.user.number
+        span.late-bus-destination= registration.destination

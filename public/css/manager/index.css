@@ -1,0 +1,15 @@
+.welcome-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.welcome-text {
+  width: 400px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  color: rgb(1, 1, 1);
+  text-align: center;
+}

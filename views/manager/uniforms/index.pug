@@ -1,0 +1,10 @@
+extends ../../partials/header
+block main
+  .all-content-inner-wrapper
+    a.general-small-button(style="margin-left: auto" href="/manager/uniforms/create" method="POST") Create New
+    .uniforms-wrapper
+      each uniform in uniforms
+        .each-uniform-wrapper
+          a.each-uniform-title(href="/manager/uniforms/edit?id=" + uniform._id.toString())= uniform.name
+          a.each-uniform-delete-button(href="/manager/uniforms/delete?id=" + uniform._id.toString() onclick="return confirm('Are you sure you want to delete this uniform?')") 
+            i.fas.fa-trash-alt

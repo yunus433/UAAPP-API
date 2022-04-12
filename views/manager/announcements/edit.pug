@@ -1,0 +1,12 @@
+extends ../../partials/header
+block main
+  form.all-content-inner-wrapper(method="POST" action="/manager/announcements/edit?id=" + announcement._id.toString())
+    a.general-link(href="javascript:history.back()") < Back
+    span.general-title Edit Announcement
+    span.general-input-title.general-required-input Announcement Title
+    input.general-input(type="text" placeholder="Announcement Title" value=announcement.title name="title" required)
+    span.general-input-title.general-required-input Announcement Text
+    input.general-input(type="text" placeholder="Announcement Text" value=announcement.text name="text" required)
+    span.general-input-title Announcement URL
+    input.general-input(type="text" placeholder="Announcement URL" value=announcement.url name="url")
+    button.general-button Edit

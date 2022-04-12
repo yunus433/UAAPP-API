@@ -1,0 +1,15 @@
+extends ./head
+block content
+  .all-wrapper
+    .all-navigation-wrapper
+      .general-logo-wrapper
+        span.general-logo-left UAA
+        span.general-logo-right APP
+      span.navigation-title MENU
+      each route in manager.allowed_routes
+        a.each-navigation-button(href=`/manager/${route}` class=(page.includes(`manager/${route}`) ? "selected-navigation-button" : ""))
+          i.fas.fa-arrow-right
+          span= route.split('_').map(each => each.substr(0, 1).toUpperCase() + each.substr(1)).join(' ')
+      span.navigation-copyright-text Copyright 2022 - Yunus Gürlek
+    .all-content-wrapper
+      block main

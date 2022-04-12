@@ -1,0 +1,11 @@
+extends ../partials/head
+block content
+  .all-wrapper
+    .general-logo-wrapper
+      span.general-logo-left UAA
+      span.general-logo-right APP
+    form.all-inner-wrapper(method="POST" action="/admin/login")
+      span.general-title Welcome admin
+      span.general-input-title Password
+      input.general-input#password-input(type="password" name="password" placeholder="admin password" autofocus autocomplete="off" required)
+      button.general-button Log in

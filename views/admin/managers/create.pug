@@ -1,0 +1,15 @@
+extends ../../partials/head
+block content
+  form.all-wrapper(method="POST" action="/admin/managers/create")
+    a.general-link(href="javascript:history.back()") < Back
+    span.general-title Create New Manager
+    span.general-input-title.general-required-input Manager Email
+    input.general-input(type="email" placeholder="Manager Email" name="email" required)
+    span.general-input-title.general-required-input Manager Password
+    input.general-input(type="text" placeholder="Manager Password" name="password" required)
+    span.general-input-title Manager Name
+    input.general-input(type="text" placeholder="Manager Name" name="name" requried)
+    span.general-input-title Manager Roles
+    span.general-input-text Please write from the allowed values, by putting commas in between. Allowed Values: announcements, late_bus, matches, teams, uniforms
+    input.general-input(type="text" placeholder="Manager Roles" name="allowed_routes" requried)
+    button.general-button Create

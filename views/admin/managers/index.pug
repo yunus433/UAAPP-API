@@ -1,0 +1,10 @@
+extends ../../partials/head
+block content
+  .all-wrapper
+    a.general-small-button(style="margin-left: auto" href="/admin/managers/create" method="POST") Create New
+    .managers-wrapper
+      each manager in managers
+        .each-manager-wrapper
+          span.each-manager-name= manager.name
+          a.each-manager-delete-button(href="/admin/managers/delete?id=" + manager._id.toString() onclick="return confirm('Are you sure you want to delete this system manager?')") 
+            i.fas.fa-trash-alt

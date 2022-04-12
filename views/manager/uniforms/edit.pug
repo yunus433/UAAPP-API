@@ -1,0 +1,10 @@
+extends ../../partials/header
+block main
+  form.all-content-inner-wrapper(method="POST" action="/manager/uniforms/edit?id=" + uniform._id.toString())
+    a.general-link(href="javascript:history.back()") < Back
+    span.general-title Edit Uniform
+    span.general-input-title.general-required-input Uniform Name
+    input.general-input(type="text" placeholder="Uniform Name" value=uniform.name name="name" required)
+    span.general-input-title.general-required-input Uniform Price
+    input.general-input(type="number" placeholder="Uniform Price" value=uniform.price name="price" required)
+    button.general-button Edit

@@ -1,0 +1,14 @@
+extends ../../partials/header
+block main
+  form.all-content-inner-wrapper(method="POST" action="/manager/announcements/create" enctype="multipart/form-data")
+    a.general-link(href="javascript:history.back()") < Back
+    span.general-title Create New Announcement
+    span.general-input-title.general-required-input Announcement Title
+    input.general-input(type="text" placeholder="Announcement Title" name="title" required)
+    span.general-input-title.general-required-input Announcement Text
+    input.general-input(type="text" placeholder="Announcement Text" name="text" required)
+    span.general-input-title.general-required-input Announcement Image
+    input.general-input(type="file" name="file")
+    span.general-input-title Announcement URL
+    input.general-input(type="text" placeholder="Announcement URL" name="url")
+    button.general-button Create

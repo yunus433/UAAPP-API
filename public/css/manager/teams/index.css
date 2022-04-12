@@ -1,0 +1,29 @@
+.teams-wrapper {
+  width: 100%;
+  height: fit-content;
+  min-height: fit-content;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.each-team-wrapper {
+  border: 1px solid rgba(1, 1, 1, 0.7);
+  border-radius: 10px;
+  height: 40px;
+  min-height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 10px 3px rgba(0, 0, 0, 0.05);
+}
+.each-team-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: rgb(1, 1, 1);
+  text-decoration: none;
+  flex: 1;
+}

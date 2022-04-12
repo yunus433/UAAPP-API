@@ -1,0 +1,58 @@
+.late-bus-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(1, 1, 1, 0.7);
+}
+.late-bus-header-name {
+  flex: 1;
+  border-right: 1px solid rgba(1, 1, 1, 0.7);
+  padding: 10px;
+  font-weight: 600;
+  color: rgb(1, 1, 1);
+  font-size: 16px;
+}
+.late-bus-header-number {
+  width: 100px;
+  border-right: 1px solid rgba(1, 1, 1, 0.7);
+  padding: 10px;
+  font-weight: 600;
+  color: rgb(1, 1, 1);
+  font-size: 16px;
+}
+.late-bus-header-destination {
+  flex: 1;
+  padding: 10px;
+  font-weight: 600;
+  color: rgb(1, 1, 1);
+  font-size: 16px;
+}
+
+.late-bus {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.late-bus-name {
+  flex: 1;
+  border-right: 1px solid rgba(1, 1, 1, 0.7);
+  padding: 10px;
+  font-weight: 300;
+  color: rgb(1, 1, 1);
+  font-size: 16px;
+}
+.late-bus-number {
+  width: 100px;
+  border-right: 1px solid rgba(1, 1, 1, 0.7);
+  padding: 10px;
+  font-weight: 300;
+  color: rgb(1, 1, 1);
+  font-size: 16px;
+}
+.late-bus-destination {
+  flex: 1;
+  padding: 10px;
+  font-weight: 300;
+  color: rgb(1, 1, 1);
+  font-size: 16px;
+}

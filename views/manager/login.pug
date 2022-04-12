@@ -1,0 +1,13 @@
+extends ../partials/head
+block content
+  .all-wrapper
+    .general-logo-wrapper
+      span.general-logo-left UAA
+      span.general-logo-right APP
+    form.all-inner-wrapper(method="POST" action="/manager/login")
+      span.general-title Welcome system manager
+      span.general-input-title Email
+      input.general-input(type="email" name="email" placeholder="account email" autofocus autocomplete="off" required)
+      span.general-input-title Password
+      input.general-input(type="password" name="password" placeholder="account password" autocomplete="off" required)
+      button.general-button Log in

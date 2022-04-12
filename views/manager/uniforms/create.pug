@@ -1,0 +1,12 @@
+extends ../../partials/header
+block main
+  form.all-content-inner-wrapper(method="POST" action="/manager/uniforms/create" enctype="multipart/form-data")
+    a.general-link(href="javascript:history.back()") < Back
+    span.general-title Create New Uniform
+    span.general-input-title.general-required-input Uniform Name
+    input.general-input(type="text" placeholder="Uniform Name" name="name" required)
+    span.general-input-title.general-required-input Uniform Price
+    input.general-input(type="number" placeholder="Uniform Price" name="price" required)
+    span.general-input-title.general-required-input Uniform Image
+    input.general-input(type="file" name="file")
+    button.general-button Create

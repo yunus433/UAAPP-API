@@ -1,25 +1,31 @@
-const async = require('async');
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const MAX_DATABASE_TEXT_FIELD_LENGTH = 1000;
+const Image = require('../image/Image');
+
+const MAX_DATABASE_TEXT_FIELD_LENGTH = 10000;
+const MAX_DATABASE_NUMBER_FIELD_VALUE = 10000;
 
 const Schema = mongoose.Schema;
 
 const UniformSchema = new Schema({
-  type: {
-    type: String,
-    maxlength: MAX_DATABASE_TEXT_FIELD_LENGTH,
-    default: null
-  },
   name: {
     type: String,
+    minlength: 1,
     maxlength: MAX_DATABASE_TEXT_FIELD_LENGTH,
-    default: null
+    required: true
   },
-  image_url: {
+  price: {
+    type: Number,
+    min: 1,
+    max: MAX_DATABASE_NUMBER_FIELD_VALUE,
+    required: true
+  },
+  image: {
     type: String,
-    default: null
+    minlength: 1,
+    maxlength: MAX_DATABASE_TEXT_FIELD_LENGTH,
+    required: true
   }
 });
 
@@ -54,115 +60,59 @@ UniformSchema.statics.findUniformByIdAndFormat = function (id, callback) {
 UniformSchema.statics.createUniform = function (data, callback) {
   const Uniform = this;
 
-  if (!data || !data.email || !data.password)
-    return callback('bad_request')
-
-  data.password = data.password.trim();
-
-  if (!validator.isEmail(data.email))
-    return callback('email_validation');
-
-  if (data.password.length < MIN_PASSWORD_LENGTH)
-    return callback('password_length');
-  
-  const newUniformData = {
-    email: data.email.trim(),
-    password: data.password.trim()
-  };
-
-  const newUniform = new Uniform(newUniformData);
-
-  newUniform.save((err, uniform) => {
-    if (err && err.code == DUPLICATED_UNIQUE_FIELD_ERROR_CODE)
-      return callback('duplicated_unique_field');
-    if (err)
-      return callback('database_error');
-
-    return callback(null, uniform._id.toString());
-  }); 
-};
-
-UniformSchema.statics.findUniform = function (data, callback) {
-  const Uniform = this;
-
-  if (!data || !data.email || !validator.isEmail(data.email) || !data.password)
+  if (!data)
     return callback('bad_request');
 
-  Uniform.findOne({
-    email: data.email.trim()
-  }, (err, uniform) => {
-    if (err) return callback('database_error');
-    if (!uniform) return callback('document_not_found');
+  if (!data.name || typeof data.name != 'string' || !data.name.trim().length || data.name.length > MAX_DATABASE_TEXT_FIELD_LENGTH)
+    return callback('bad_request');
 
-    verifyPassword(data.password.trim(), uniform.password, res => {
-      if (!res) return callback('password_verification');
+  if (!data.price || isNaN(parseInt(data.price)) || parseInt(data.price) < 0 || parseInt(data.price) > MAX_DATABASE_NUMBER_FIELD_VALUE)
+    return callback('bad_request');
 
-      getUniform(uniform, (err, uniform) => {
+  Image.findImageByUrl(data.image, (err, image) => {
+    if (err) return callback(err);
+
+    const newUniformData = {
+      name: data.name.trim(),
+      price: parseInt(data.price).toString(),
+      image: image.url
+    };
+
+    const newUniform = new Uniform(newUniformData);
+
+    newUniform.save((err, uniform) => {
+      if (err) return callback('database_error');
+
+      Image.findImageByUrlAndSetAsUsed(image.url, err => {
         if (err) return callback(err);
 
-        return callback(null, uniform);
+        return callback(null, uniform._id.toString());
       });
     });
   });
 };
 
-UniformSchema.statics.createAndSendConfirmationCode = function (id, callback) {
+UniformSchema.statics.findUniformsByFiltersAndSorted = function (data, callback) {
   const Uniform = this;
 
-  Uniform.findUniformById(id, (err, uniform) => {
-    if (err) return callback(err);
-    if (uniform.is_email_confirmed) return callback('document_validation');
+  const filters = {};
+  const skip = data.skip && !isNaN(parseInt(data.skip)) && parseInt(data.skip) >= 0 ? parseInt(data.skip) : 0;
+  const limit = data.limit && !isNaN(parseInt(data.limit)) && parseInt(data.limit) >= 0 && parseInt(data.limit) < 100 ? parseInt(data.limit) : 100;
 
-    const code = Math.round(Math.random() * 1e6) + 1e5;
-    const exp_date = ((new Date).getTime()) + FIVE_MIN_IN_MS;
+  if (data.name && typeof data.name == 'string' && data.name.trim().length && data.name.length < MAX_DATABASE_TEXT_FIELD_LENGTH)
+    filters.name = data.name.trim();
 
-    Uniform.findByIdAndUpdate(uniform._id, {$set: {
-      email_confirmation_code: code,
-      email_confirmation_code_exp_date: exp_date
-    }}, err => {
-      if (err) return callback('database_error');
-
-      sendEmail({
-        template: 'email_confirmation',
-        to: uniform.email,
-        code
-      }, err => {
-        if (err) return callback(err);
-
-        return callback(null, exp_date);
-      });
-    });
-  });
-};
-
-UniformSchema.statics.findUniformByIdAndConfirmEmail = function (id, data, callback) {
-  const Uniform = this;
-
-  if (!data.code)
-    return callback('bad_request');
-
-  Uniform.findUniformById(id, (err, uniform) => {
-    if (err) return callback(err);
-
-    if (uniform.is_email_confirmed)
-      return callback('already_authenticated');
-
-    if (uniform.email_confirmation_code != data.code)
-      return callback('bad_request');
-
-    if (uniform.email_confirmation_code_exp_date < (new Date).getTime())
-      return callback('request_timeout');
-    
-    Uniform.findByIdAndUpdate(uniform._id, {$set: {
-      is_email_confirmed: true,
-      email_confirmation_code: null,
-      email_confirmation_code_exp_date: null
-    }}, err => {
-      if (err) return callback('database_error');
-
-      return callback(null);
-    });
-  });
+  Uniform
+    .find(filters)
+    .skip(skip)
+    .limit(limit)
+    .sort({ _id: -1 })
+    .then(uniforms => callback(null, {
+      skip,
+      limit,
+      uniforms
+    }))
+    .catch(err => callback('database_error'));
 };
 
 UniformSchema.statics.findUniformByIdAndUpdate = function (id, data, callback) {
@@ -172,26 +122,28 @@ UniformSchema.statics.findUniformByIdAndUpdate = function (id, data, callback) {
     if (err) return callback(err);
 
     Uniform.findByIdAndUpdate(uniform._id, {$set: {
-      name: data.name && data.name.length ? data.name : uniform.name
-    }}, {new: true}, (err, uniform) => {
+      name: data.name && typeof data.name == 'string' && data.name.trim().length && data.name.length < MAX_DATABASE_TEXT_FIELD_LENGTH ? data.name.trim() : uniform.name,
+      price: data.price && !isNaN(parseInt(data.price)) && parseInt(data.price) > 0 && parseInt(data.price) < MAX_DATABASE_NUMBER_FIELD_VALUE ? parseInt(data.price).toString() : uniform.price
+    }}, err => {
       if (err) return callback('database_error');
 
-      if (uniform.is_account_complete || !uniform.name || !uniform.name.length)
-        return callback(null);
-
-      Uniform.findByIdAndUpdate(uniform._id, {$set: {
-        is_account_complete: true
-      }}, err => {
-        if (err) return callback('database_error');
-
-        return callback(null);
-      });
+      return callback(null);
     });
   });
 };
 
-UniformSchema.statics.findUniformByIdAndUpdateProfilePhoto = function (id, data, callback) {
-  
+UniformSchema.statics.findUniformByIdAndDelete = function (id, callback) {
+  const Uniform = this;
+
+  Uniform.findUniformById(id, (err, uniform) => {
+    if (err) return callback(err);
+
+    Uniform.findByIdAndDelete(uniform._id, err => {
+      if (err) return callback('database_error');
+
+      return callback(null);
+    });
+  });
 };
 
 module.exports = mongoose.model('Uniform', UniformSchema);

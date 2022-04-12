@@ -1,0 +1,10 @@
+extends ../../partials/header
+block main
+  .all-content-inner-wrapper
+    a.general-small-button(style="margin-left: auto" href="/manager/announcements/create" method="POST") Create New
+    .announcements-wrapper
+      each announcement in announcements
+        .each-announcement-wrapper
+          a.each-announcement-title(href="/manager/announcements/edit?id=" + announcement._id.toString())= announcement.title
+          a.each-announcement-delete-button(href="/manager/announcements/delete?id=" + announcement._id.toString() onclick="return confirm('Are you sure you want to delete this announcement?')") 
+            i.fas.fa-trash-alt

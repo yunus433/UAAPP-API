@@ -1,0 +1,8 @@
+extends ../../partials/header
+block main
+  form.all-content-inner-wrapper(method="POST" action="/manager/teams/edit?id=" + team._id.toString())
+    a.general-link(href="javascript:history.back()") < Back
+    span.general-title Edit Team
+    span.general-input-title.general-required-input Team Name 
+    input.general-input(type="text" placeholder="Team Name" value=team.name name="name" required)
+    button.general-button Edit

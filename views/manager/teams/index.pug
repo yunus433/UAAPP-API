@@ -1,0 +1,8 @@
+extends ../../partials/header
+block main
+  .all-content-inner-wrapper
+    a.general-small-button(style="margin-left: auto" href="/manager/teams/create" method="POST") Create New
+    .teams-wrapper
+      each team in teams
+        .each-team-wrapper
+          a.each-team-name(href="/manager/teams/edit?id=" + team._id.toString())= team.name
